@@ -1,0 +1,22 @@
+data:extend({
+    {
+        name="bbu-enabled",
+        type="bool-setting",
+        setting_type="runtime-per-user",
+        default_value=true,
+    },
+    {
+        name="bbu-show-enabled-recipes",
+        type="bool-setting",
+        setting_type="runtime-per-user",
+        default_value=true,
+    },
+    {
+        name="bbu-slot-count",
+        type="int-setting",
+        setting_type="runtime-per-user",
+        default_value=4,
+        minimum_value=1,
+        maximum_value=10,
+    },
+})
