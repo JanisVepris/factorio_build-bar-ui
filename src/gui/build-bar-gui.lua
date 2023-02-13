@@ -18,7 +18,7 @@ local function add_gui_layout(player)
         name = "bbu_ui_frame_inner_flow",
         direction = "vertical",
     }
-    
+
     flow.add {
         type = "switch",
         name = "bbu_ui_slot_table_switch",
@@ -42,11 +42,14 @@ end
 local function add_slots(player)
     local slotCount = bbu.pcfg(player, "bbu-slot-count")
     local container = bbu.get_slot_container(player)
-    local elemFilters = {}
+    local elemFilters = {
+        {filter = "category", category="crafting"},
+        {filter = "category", category="advanced-crafting"},
+    }
 
     if bbu.pcfg(player, "bbu-show-enabled-recipes") == true
     then
-        table.insert(elemFilters, {filter = "enabled"})
+        table.insert(elemFilters, { filter = "enabled", mode = "and" })
     end
 
     for i = 1, slotCount, 1
@@ -86,11 +89,13 @@ local function on_config_change(event)
 end
 
 local function on_player_created(event)
+    bbu.debug("On Player Created!")
+
     local player = game.get_player(event.player_index)
 
     initialize_player_gui(player)
 
-    player.print({"print-text.bbu-ui-init"})
+    player.print({ "print-text.bbu-ui-init" })
 end
 
 local function initialize()
@@ -99,6 +104,50 @@ local function initialize()
     end
 end
 
+local function refresh_gui(player)
+    local slotContainer = bbu.get_slot_container(player)
+    local slotContainerOuter = bbu.get_slot_container(player, true)
+    local slotCount = bbu.pcfg(player, "bbu-slot-count")
+
+    if not slotContainer then return end
+
+    selectedRecipes = {}
+
+    for i = 1, slotCount, 1
+    do
+        table.insert(
+            selectedRecipes,
+            slotContainer["bbu_slot_" .. i].elem_value
+        )
+    end
+
+    slotContainerOuter.destroy()
+    initialize_player_gui(player)
+    slotContainer = bbu.get_slot_container(player)
+
+    for i = 1, slotCount, 1
+    do
+        local recipe = selectedRecipes[i]
+
+        if recipe ~= nil then
+            slotContainer["bbu_slot_" .. i].elem_value = recipe
+        end
+    end
+end
+
+local function on_tick()
+    if bbu.version == bbu.expected_version then return end
+
+    bbu.debug("On Tick!")
+
+    for _, player in pairs(game.players) do
+        refresh_gui(player)
+    end
+
+    bbu.version = bbu.expected_version
+end
+
 script.on_init(initialize)
 script.on_event(defines.events.on_player_created, on_player_created)
 script.on_event(defines.events.on_runtime_mod_setting_changed, on_config_change)
+script.on_nth_tick(100, on_tick)
