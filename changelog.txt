@@ -8,3 +8,4 @@ Version: 1.1.0
 Date: 2023-02-24
   Changes:
     - Code cleanup and rewrite
+    - Selected recipes are not reset after mod settings change when it is not necessary
