@@ -1,4 +1,6 @@
-local function add_gui_layout(player)
+function bbu.gui.add_gui_layout(player)
+    bbu.util.debug("Adding GUI layout")
+
     local gui = player.gui.top
 
     local frame = gui.add {
@@ -37,20 +39,24 @@ local function add_gui_layout(player)
         draw_horizontal_line_after_headers = false,
         style = "slot_table"
     }
+
+    bbu.util.debug("Adding GUI layout: DONE")
 end
 
-local function add_slots(player)
-    local slotCount = bbu.pcfg(player, "bbu-slot-count")
-    local container = bbu.get_slot_container(player)
-    local elemFilters = {
-        {filter = "category", category="crafting"},
-        {filter = "category", category="advanced-crafting"},
-    }
+function bbu.gui.add_slots(player)
+    bbu.util.debug("Adding slots")
 
-    if bbu.pcfg(player, "bbu-show-enabled-recipes") == true
+    local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
+    local container = bbu.util.get_slot_container(player)
+
+    local elemFilters = {}
+
+    if bbu.util.pcfg(player, "bbu-show-enabled-recipes") == true
     then
         table.insert(elemFilters, { filter = "enabled", mode = "and" })
     end
+
+    table.insert(elemFilters, {filter = "category", category="crafting", mode = "and"})
 
     for i = 1, slotCount, 1
     do
@@ -68,86 +74,76 @@ local function add_slots(player)
             sprite = "bbu-build-icon"
         }
     end
+
+    bbu.util.debug("Adding slots: DONE")
 end
 
-local function initialize_player_gui(player)
-    local isBbuEnabled = bbu.pcfg(player, "bbu-enabled")
+function bbu.gui.initialize_player_gui(player)
+    local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
     if not isBbuEnabled then return end
 
-    add_gui_layout(player)
-    add_slots(player)
+    bbu.util.debug("Initializing GUI")
+
+    bbu.gui.add_gui_layout(player)
+    bbu.gui.add_slots(player)
 end
 
-local function on_config_change(event)
-    local player = game.get_player(event.player_index)
-    local slotContainer = bbu.get_slot_container(player, true)
+function bbu.gui.get_selected_recipes(player, slot_container)
+    local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
 
-    if slotContainer then slotContainer.destroy() end
+    local selected_recipes = {}
 
-    initialize_player_gui(player)
-end
-
-local function on_player_created(event)
-    bbu.debug("On Player Created!")
-
-    local player = game.get_player(event.player_index)
-
-    initialize_player_gui(player)
-
-    player.print({ "print-text.bbu-ui-init" })
-end
-
-local function initialize()
-    for _, player in pairs(game.players) do
-        initialize_player_gui(player)
-    end
-end
-
-local function refresh_gui(player)
-    local slotContainer = bbu.get_slot_container(player)
-    local slotContainerOuter = bbu.get_slot_container(player, true)
-    local slotCount = bbu.pcfg(player, "bbu-slot-count")
-
-    if not slotContainer then return end
-
-    selectedRecipes = {}
-
-    for i = 1, slotCount, 1
+    for i = 1, slot_count, 1
     do
-        table.insert(
-            selectedRecipes,
-            slotContainer["bbu_slot_" .. i].elem_value
-        )
+        local value = nil
+        
+        if slot_container["bbu_slot_" .. i] ~= nil then
+            value = slot_container["bbu_slot_" .. i].elem_value
+        end
+
+        table.insert(selected_recipes, value)
     end
 
-    slotContainerOuter.destroy()
-    initialize_player_gui(player)
-    slotContainer = bbu.get_slot_container(player)
+    return selected_recipes
+end
 
-    for i = 1, slotCount, 1
+function bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
+    local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
+
+    for i = 1, slot_count, 1
     do
-        local recipe = selectedRecipes[i]
+        local recipe = selected_recipes[i]
 
         if recipe ~= nil then
-            slotContainer["bbu_slot_" .. i].elem_value = recipe
+            slot_container["bbu_slot_" .. i].elem_value = recipe
         end
     end
 end
 
-local function on_tick()
-    if bbu.version == bbu.expected_version then return end
+function bbu.gui.refresh_gui(player)
+    local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
-    bbu.debug("On Tick!")
+    if not isBbuEnabled then return end
 
-    for _, player in pairs(game.players) do
-        refresh_gui(player)
+    local slot_container = bbu.util.get_slot_container(player)
+
+    bbu.util.debug("Refreshing GUI")
+
+    local selected_recipes = {}
+
+    if slot_container then
+        selected_recipes = bbu.gui.get_selected_recipes(player, slot_container)
+        local slot_container_outer = bbu.util.get_slot_container(player, true)
+
+        if slot_container_outer then slot_container_outer.destroy() end
     end
 
-    bbu.version = bbu.expected_version
-end
+    bbu.gui.initialize_player_gui(player)
 
-script.on_init(initialize)
-script.on_event(defines.events.on_player_created, on_player_created)
-script.on_event(defines.events.on_runtime_mod_setting_changed, on_config_change)
-script.on_nth_tick(100, on_tick)
+    slot_container = bbu.util.get_slot_container(player)
+
+    bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
+
+    bbu.util.debug("Refreshing GUI: DONE")
+end

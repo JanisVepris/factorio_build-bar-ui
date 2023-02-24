@@ -1,7 +1,11 @@
-bbuLogFormat = { comment = false, numformat = '%1.8g' }
+function bbu.util.debug(input, separator)
+    if bbu.conf.debug == false then return end
 
-function bbu.debug(input)
-    if bbu.debug == false then return end
+    separator = separator or false
 
-    print("BBU: " .. serpent.block(input, bbuLogFormat))
+    print(bbu.conf.log_prefix .. serpent.block(input, bbu.conf.log_format))
+
+    if separator == true then
+        print(bbu.conf.log_prefix .. "----------------------")
+    end
 end
