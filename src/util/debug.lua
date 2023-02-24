@@ -1,7 +1,5 @@
-bbuLogFormat = { comment = false, numformat = '%1.8g' }
+function bbu.util.debug(input)
+    if bbu.conf.debug == false then return end
 
-function bbu.debug(input)
-    if bbu.debug == false then return end
-
-    print("BBU: " .. serpent.block(input, bbuLogFormat))
+    print("BBU: " .. serpent.block(input, bbu.conf.log_format))
 end

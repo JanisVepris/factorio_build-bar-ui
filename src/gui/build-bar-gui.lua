@@ -89,8 +89,6 @@ local function on_config_change(event)
 end
 
 local function on_player_created(event)
-    bbu.debug("On Player Created!")
-
     local player = game.get_player(event.player_index)
 
     initialize_player_gui(player)
@@ -136,15 +134,13 @@ local function refresh_gui(player)
 end
 
 local function on_tick()
-    if bbu.version == bbu.expected_version then return end
-
-    bbu.debug("On Tick!")
+    if bbu.state.dirty == false then return end
 
     for _, player in pairs(game.players) do
         refresh_gui(player)
     end
 
-    bbu.version = bbu.expected_version
+    bbu.state.dirty = false
 end
 
 script.on_init(initialize)

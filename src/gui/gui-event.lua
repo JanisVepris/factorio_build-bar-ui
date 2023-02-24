@@ -70,13 +70,6 @@ local function on_gui_click(event)
 
     if not is_supported_element(element) then return end
 
-    bbu.debug("-=-=-=-=-=")
-    bbu.debug("CLICK")
-    bbu.debug(event)
-    bbu.debug(event.element.name)
-    bbu.debug("-=-=-=-=-=")
-
-
     if is_slot_craft_button(element) then on_slot_craft_button_clicked(event) end
     if is_slot_table_switch(element) then on_slot_table_switch_clicked(event) end
 end

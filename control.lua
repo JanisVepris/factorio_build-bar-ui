@@ -1,7 +1,17 @@
 --control.lua
-bbu = {}
+bbu = {
+    state = {
+        dirty = true,
+    },
+    conf = {
+        debug = false,
+        log_format = { comment = false, numformat = '%1.8g' },
+    },
+    util = {},
+    f = {},
+    gui = {},
+}
 
-bbu.debug = false
 bbu.version = 0
 bbu.expected_version = 101
 
