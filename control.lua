@@ -5,6 +5,7 @@ bbu = {
     },
     conf = {
         debug = false,
+        log_prefix = "BBU: ",
         log_format = { comment = false, numformat = '%1.8g' },
     },
     util = {},
