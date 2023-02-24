@@ -1,4 +1,3 @@
--- control.lua
 bbu = {
     state = { -- mod state
         dirty = true
@@ -29,6 +28,8 @@ require("src/function/craft-items")
 require("src/gui/build-bar-gui")
 
 -- event
-require("src/gui/gui-event")
+require("src/event/game-loop")
+require("src/event/gui-event")
 
+bbu.e.loop.init()
 bbu.e.gui.init()

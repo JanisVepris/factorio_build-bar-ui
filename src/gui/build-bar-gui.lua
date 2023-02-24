@@ -79,71 +79,47 @@ function bbu.gui.initialize_player_gui(player)
     bbu.gui.add_slots(player)
 end
 
-function bbu.gui.on_config_change(event)
-    local player = game.get_player(event.player_index)
-    local slotContainer = bbu.util.get_slot_container(player, true)
+function bbu.gui.get_selected_recipes(player, slot_container)
+    local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
+    
+    local selected_recipes = {}
 
-    if slotContainer then slotContainer.destroy() end
-
-    bbu.gui.initialize_player_gui(player)
-end
-
-function bbu.gui.on_player_created(event)
-    local player = game.get_player(event.player_index)
-
-    bbu.gui.initialize_player_gui(player)
-
-    player.print({ "print-text.bbu-ui-init" })
-end
-
-function bbu.gui.initialize()
-    for _, player in pairs(game.players) do
-        bbu.gui.initialize_player_gui(player)
-    end
-end
-
-function bbu.gui.refresh_gui(player)
-    local slotContainer = bbu.util.get_slot_container(player)
-    local slotContainerOuter = bbu.util.get_slot_container(player, true)
-    local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
-
-    if not slotContainer then return end
-
-    selectedRecipes = {}
-
-    for i = 1, slotCount, 1
+    for i = 1, slot_count, 1
     do
         table.insert(
-            selectedRecipes,
-            slotContainer["bbu_slot_" .. i].elem_value
+            selected_recipes,
+            slot_container["bbu_slot_" .. i].elem_value
         )
     end
 
-    slotContainerOuter.destroy()
-    bbu.gui.initialize_player_gui(player)
-    slotContainer = bbu.util.get_slot_container(player)
+    return selected_recipes
+end
 
-    for i = 1, slotCount, 1
+function bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
+    local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
+    
+    for i = 1, slot_count, 1
     do
-        local recipe = selectedRecipes[i]
+        local recipe = selected_recipes[i]
 
         if recipe ~= nil then
-            slotContainer["bbu_slot_" .. i].elem_value = recipe
+            slot_container["bbu_slot_" .. i].elem_value = recipe
         end
     end
 end
 
-function bbu.gui.on_tick()
-    if bbu.state.dirty == false then return end
+function bbu.gui.refresh_gui(player)
+    local slot_container = bbu.util.get_slot_container(player)
+    if not slot_container then return end
 
-    for _, player in pairs(game.players) do
-        bbu.gui.refresh_gui(player)
-    end
+    local selected_recipes = bbu.gui.get_selected_recipes(player, slot_container)
 
-    bbu.state.dirty = false
+    local slot_container_outer = bbu.util.get_slot_container(player, true)
+    slot_container_outer.destroy()
+    
+    bbu.gui.initialize_player_gui(player)
+
+    slot_container = bbu.util.get_slot_container(player)
+
+    bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
 end
-
-script.on_init(bbu.gui.initialize)
-script.on_event(defines.events.on_player_created, bbu.gui.on_player_created)
-script.on_event(defines.events.on_runtime_mod_setting_changed, bbu.gui.on_config_change)
-script.on_nth_tick(100, bbu.gui.on_tick)
