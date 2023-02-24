@@ -1,5 +1,5 @@
 -- Amount -1 means craft all available amount
-function bbu.craft_items(playerIndex, recipe, amount)
+function bbu.f.craft_items(playerIndex, recipe, amount)
     if not amount then return end
     if amount == 0 then return end
 

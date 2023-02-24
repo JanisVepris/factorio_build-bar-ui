@@ -49,7 +49,7 @@ local function on_slot_craft_button_clicked(event)
 
     local amount = get_craft_amount(event)
 
-    bbu.craft_items(playerIndex, recipe, amount)
+    bbu.f.craft_items(playerIndex, recipe, amount)
 end
 
 local function on_slot_table_switch_clicked(event)
