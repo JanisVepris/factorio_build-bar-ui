@@ -3,3 +3,8 @@ Version: 1.0.1
 Date: 2023-02-14
   Changes:
     - Show only recipes craftable by the player character
+---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 2023-02-24
+  Changes:
+    - Code cleanup and rewrite
