@@ -81,7 +81,7 @@ end
 
 function bbu.gui.get_selected_recipes(player, slot_container)
     local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
-    
+
     local selected_recipes = {}
 
     for i = 1, slot_count, 1
@@ -97,7 +97,7 @@ end
 
 function bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
     local slot_count = bbu.util.pcfg(player, "bbu-slot-count")
-    
+
     for i = 1, slot_count, 1
     do
         local recipe = selected_recipes[i]
@@ -116,7 +116,7 @@ function bbu.gui.refresh_gui(player)
 
     local slot_container_outer = bbu.util.get_slot_container(player, true)
     slot_container_outer.destroy()
-    
+
     bbu.gui.initialize_player_gui(player)
 
     slot_container = bbu.util.get_slot_container(player)

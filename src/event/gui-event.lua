@@ -60,7 +60,7 @@ function bbu.e.gui.handler.on_slot_table_switch_clicked(event)
     if switch.switch_state == "left"
     then
         slotContainer.visible = true
-    else 
+    else
         slotContainer.visible = false
     end
 end
