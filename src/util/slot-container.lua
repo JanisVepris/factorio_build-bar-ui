@@ -1,4 +1,5 @@
-function bbu.get_slot_container(player, outer)
+-- get UI slot container element
+function bbu.util.get_slot_container(player, outer)
     outer = outer or false
 
     if outer then

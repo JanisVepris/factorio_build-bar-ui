@@ -31,7 +31,7 @@ end
 
 local function resolve_craft_recipe(playerIndex, slotId)
     local player = game.get_player(playerIndex)
-    local slotContainer = bbu.get_slot_container(player)
+    local slotContainer = bbu.util.get_slot_container(player)
     return slotContainer["bbu_slot_" .. slotId].elem_value
 end
 
@@ -55,7 +55,7 @@ end
 local function on_slot_table_switch_clicked(event)
     local switch = event.element
     local player = game.get_player(event.player_index)
-    local slotContainer = bbu.get_slot_container(player)
+    local slotContainer = bbu.util.get_slot_container(player)
 
     if switch.switch_state == "left"
     then

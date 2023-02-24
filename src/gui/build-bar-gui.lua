@@ -41,7 +41,7 @@ end
 
 local function add_slots(player)
     local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
-    local container = bbu.get_slot_container(player)
+    local container = bbu.util.get_slot_container(player)
     local elemFilters = {
         {filter = "category", category="crafting"},
         {filter = "category", category="advanced-crafting"},
@@ -81,7 +81,7 @@ end
 
 local function on_config_change(event)
     local player = game.get_player(event.player_index)
-    local slotContainer = bbu.get_slot_container(player, true)
+    local slotContainer = bbu.util.get_slot_container(player, true)
 
     if slotContainer then slotContainer.destroy() end
 
@@ -103,8 +103,8 @@ local function initialize()
 end
 
 local function refresh_gui(player)
-    local slotContainer = bbu.get_slot_container(player)
-    local slotContainerOuter = bbu.get_slot_container(player, true)
+    local slotContainer = bbu.util.get_slot_container(player)
+    local slotContainerOuter = bbu.util.get_slot_container(player, true)
     local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
 
     if not slotContainer then return end
@@ -121,7 +121,7 @@ local function refresh_gui(player)
 
     slotContainerOuter.destroy()
     initialize_player_gui(player)
-    slotContainer = bbu.get_slot_container(player)
+    slotContainer = bbu.util.get_slot_container(player)
 
     for i = 1, slotCount, 1
     do
