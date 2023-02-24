@@ -27,6 +27,8 @@ require("src/function/craft-items")
 
 -- gui
 require("src/gui/build-bar-gui")
+
+-- event
 require("src/gui/gui-event")
 
 bbu.e.gui.init()

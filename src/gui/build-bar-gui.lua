@@ -1,4 +1,4 @@
-local function add_gui_layout(player)
+function bbu.gui.add_gui_layout(player)
     local gui = player.gui.top
 
     local frame = gui.add {
@@ -39,7 +39,7 @@ local function add_gui_layout(player)
     }
 end
 
-local function add_slots(player)
+function bbu.gui.add_slots(player)
     local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
     local container = bbu.util.get_slot_container(player)
     local elemFilters = {
@@ -70,39 +70,39 @@ local function add_slots(player)
     end
 end
 
-local function initialize_player_gui(player)
+function bbu.gui.initialize_player_gui(player)
     local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
     if not isBbuEnabled then return end
 
-    add_gui_layout(player)
-    add_slots(player)
+    bbu.gui.add_gui_layout(player)
+    bbu.gui.add_slots(player)
 end
 
-local function on_config_change(event)
+function bbu.gui.on_config_change(event)
     local player = game.get_player(event.player_index)
     local slotContainer = bbu.util.get_slot_container(player, true)
 
     if slotContainer then slotContainer.destroy() end
 
-    initialize_player_gui(player)
+    bbu.gui.initialize_player_gui(player)
 end
 
-local function on_player_created(event)
+function bbu.gui.on_player_created(event)
     local player = game.get_player(event.player_index)
 
-    initialize_player_gui(player)
+    bbu.gui.initialize_player_gui(player)
 
     player.print({ "print-text.bbu-ui-init" })
 end
 
-local function initialize()
+function bbu.gui.initialize()
     for _, player in pairs(game.players) do
-        initialize_player_gui(player)
+        bbu.gui.initialize_player_gui(player)
     end
 end
 
-local function refresh_gui(player)
+function bbu.gui.refresh_gui(player)
     local slotContainer = bbu.util.get_slot_container(player)
     local slotContainerOuter = bbu.util.get_slot_container(player, true)
     local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
@@ -120,7 +120,7 @@ local function refresh_gui(player)
     end
 
     slotContainerOuter.destroy()
-    initialize_player_gui(player)
+    bbu.gui.initialize_player_gui(player)
     slotContainer = bbu.util.get_slot_container(player)
 
     for i = 1, slotCount, 1
@@ -133,17 +133,17 @@ local function refresh_gui(player)
     end
 end
 
-local function on_tick()
+function bbu.gui.on_tick()
     if bbu.state.dirty == false then return end
 
     for _, player in pairs(game.players) do
-        refresh_gui(player)
+        bbu.gui.refresh_gui(player)
     end
 
     bbu.state.dirty = false
 end
 
-script.on_init(initialize)
-script.on_event(defines.events.on_player_created, on_player_created)
-script.on_event(defines.events.on_runtime_mod_setting_changed, on_config_change)
-script.on_nth_tick(100, on_tick)
+script.on_init(bbu.gui.initialize)
+script.on_event(defines.events.on_player_created, bbu.gui.on_player_created)
+script.on_event(defines.events.on_runtime_mod_setting_changed, bbu.gui.on_config_change)
+script.on_nth_tick(100, bbu.gui.on_tick)
