@@ -1,26 +1,32 @@
---control.lua
+-- control.lua
 bbu = {
-    state = {
-        dirty = true,
+    state = { -- mod state
+        dirty = true
     },
-    conf = {
+    conf = { -- mod config
         debug = false,
         log_prefix = "BBU: ",
-        log_format = { comment = false, numformat = '%1.8g' },
+        log_format = {
+            comment = false,
+            numformat = '%1.8g'
+        }
     },
-    util = {},
-    f = {},
-    gui = {},
+    e = {}, -- event subscription and handlers
+    util = {}, -- utility functions
+    f = {}, -- gameplay functions
+    gui = {} -- gui element definitions and functions
 }
 
---utils
+-- utils
 require("src/util/debug")
 require("src/util/cfg")
 require("src/util/slot-container")
 
---functions
+-- functions
 require("src/function/craft-items")
 
---gui
+-- gui
 require("src/gui/build-bar-gui")
 require("src/gui/gui-event")
+
+bbu.e.gui.init()

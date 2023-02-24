@@ -1,4 +1,4 @@
-local function is_supported_element(element)
+function bbu.e.gui.is_supported_element(element)
     local prefix = string.sub(element.name, 1, 3)
 
     if (element.mod == MODNAME) then return true end
@@ -7,7 +7,7 @@ local function is_supported_element(element)
     return false
 end
 
-local function is_slot_craft_button(element)
+function bbu.e.gui.is_slot_craft_button(element)
     local prefix = string.sub(element.name, 1, 15)
 
     if (prefix == "bbu_slot_craft_") then return true end
@@ -15,13 +15,13 @@ local function is_slot_craft_button(element)
     return false
 end
 
-local function is_slot_table_switch(element)
+function bbu.e.gui.is_slot_table_switch(element)
     if element.name == "bbu_ui_slot_table_switch" then return true end
 
     return false
 end
 
-local function get_craft_amount(event)
+function bbu.e.gui.determine_craft_amount(event)
     if event.button == 2 and event.shift == false then return 1 end
     if event.button == 2 and event.shift == true then return -1 end
     if event.button == 4 then return 5 end
@@ -29,13 +29,13 @@ local function get_craft_amount(event)
     return 0
 end
 
-local function resolve_craft_recipe(playerIndex, slotId)
+function bbu.e.gui.resolve_craft_recipe(playerIndex, slotId)
     local player = game.get_player(playerIndex)
     local slotContainer = bbu.util.get_slot_container(player)
     return slotContainer["bbu_slot_" .. slotId].elem_value
 end
 
-local function on_slot_craft_button_clicked(event)
+function bbu.e.gui.on_slot_craft_button_clicked(event)
     local slotId = string.sub(event.element.name, 16, -1)
     local playerIndex = event.player_index
     local recipe = resolve_craft_recipe(event.player_index, slotId)
@@ -47,12 +47,12 @@ local function on_slot_craft_button_clicked(event)
         return
     end
 
-    local amount = get_craft_amount(event)
+    local amount = bbu.e.gui.determine_craft_amount(event)
 
     bbu.f.craft_items(playerIndex, recipe, amount)
 end
 
-local function on_slot_table_switch_clicked(event)
+function bbu.e.gui.handler.on_slot_table_switch_clicked(event)
     local switch = event.element
     local player = game.get_player(event.player_index)
     local slotContainer = bbu.util.get_slot_container(player)
@@ -65,13 +65,16 @@ local function on_slot_table_switch_clicked(event)
     end
 end
 
-local function on_gui_click(event)
+function bbu.e.gui.handler.on_gui_click(event)
     local element = event.element
 
-    if not is_supported_element(element) then return end
+    if not bbu.e.gui.is_supported_element(element) then return end
 
-    if is_slot_craft_button(element) then on_slot_craft_button_clicked(event) end
-    if is_slot_table_switch(element) then on_slot_table_switch_clicked(event) end
+    if bbu.e.gui.is_slot_craft_button(element) then bbu.e.gui.handler.on_slot_craft_button_clicked(event) end
+    if bbu.e.gui.is_slot_table_switch(element) then bbu.e.gui.handler.on_slot_table_switch_clicked(event) end
 end
 
-script.on_event(defines.events.on_gui_click, on_gui_click)
+
+function bbu.e.gui.init()
+    script.on_event(defines.events.on_gui_click, bbu.e.gui.handler.on_gui_click)
+end
