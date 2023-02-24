@@ -40,14 +40,14 @@ local function add_gui_layout(player)
 end
 
 local function add_slots(player)
-    local slotCount = bbu.pcfg(player, "bbu-slot-count")
+    local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
     local container = bbu.get_slot_container(player)
     local elemFilters = {
         {filter = "category", category="crafting"},
         {filter = "category", category="advanced-crafting"},
     }
 
-    if bbu.pcfg(player, "bbu-show-enabled-recipes") == true
+    if bbu.util.pcfg(player, "bbu-show-enabled-recipes") == true
     then
         table.insert(elemFilters, { filter = "enabled", mode = "and" })
     end
@@ -71,7 +71,7 @@ local function add_slots(player)
 end
 
 local function initialize_player_gui(player)
-    local isBbuEnabled = bbu.pcfg(player, "bbu-enabled")
+    local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
     if not isBbuEnabled then return end
 
@@ -105,7 +105,7 @@ end
 local function refresh_gui(player)
     local slotContainer = bbu.get_slot_container(player)
     local slotContainerOuter = bbu.get_slot_container(player, true)
-    local slotCount = bbu.pcfg(player, "bbu-slot-count")
+    local slotCount = bbu.util.pcfg(player, "bbu-slot-count")
 
     if not slotContainer then return end
 
