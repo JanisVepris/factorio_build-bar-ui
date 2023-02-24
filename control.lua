@@ -13,9 +13,6 @@ bbu = {
     gui = {},
 }
 
-bbu.version = 0
-bbu.expected_version = 101
-
 --utils
 require("src/util/debug")
 require("src/util/cfg")
