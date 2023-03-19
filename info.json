@@ -1,9 +1,9 @@
 {
     "name": "build-bar-ui",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "title": "Build Bar UI",
     "author": "janisvepris",
     "factorio_version": "1.1",
     "dependencies": ["base >= 1.1"],
     "description": "This mod adds UI bar for constructing things without going into your inventory window."
-  }
+}
