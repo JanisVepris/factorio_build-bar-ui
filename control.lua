@@ -3,7 +3,7 @@ bbu = {
         dirty = true
     },
     conf = { -- mod config
-        debug = true,
+        debug = false,
         log_prefix = "BBU: ",
         log_format = {
             comment = false,

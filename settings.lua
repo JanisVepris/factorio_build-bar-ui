@@ -6,6 +6,12 @@ data:extend({
         default_value=true,
     },
     {
+        name="bbu-orientation-horizontal",
+        type="bool-setting",
+        setting_type="runtime-per-user",
+        default_value=false,
+    },
+    {
         name="bbu-show-enabled-recipes",
         type="bool-setting",
         setting_type="runtime-per-user",

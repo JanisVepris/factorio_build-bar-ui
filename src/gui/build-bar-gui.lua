@@ -40,10 +40,16 @@ function bbu.gui.add_gui_layout(player)
         direction = "vertical",
     }
 
+    local column_count = 2
+
+    if bbu.util.pcfg(player, "bbu-orientation-horizontal") == true then
+        column_count = bbu.util.pcfg(player, "bbu-slot-count")
+    end
+
     flow.add {
         type = "table",
         name = "bbu_ui_table_inner",
-        column_count = 2,
+        column_count = column_count,
         draw_vertical_lines = false,
         draw_horizontal_lines = false,
         draw_horizontal_line_after_headers = false,
@@ -68,6 +74,40 @@ function bbu.gui.add_slots(player)
 
     table.insert(elemFilters, {filter = "category", category="crafting", mode = "and"})
 
+    if bbu.util.pcfg(player, "bbu-orientation-horizontal") == false
+    then
+        bbu.gui.add_slots_vertical(container, slotCount, elemFilters)
+    else
+        bbu.gui.add_slots_horizontal(container, slotCount, elemFilters)
+    end
+
+    bbu.util.debug("Adding slots: DONE")
+end
+
+function bbu.gui.add_slots_horizontal(container, slotCount, elemFilters)
+    for i = 1, slotCount, 1
+    do
+        container.add {
+            name = "bbu_slot_" .. i,
+            type = "choose-elem-button",
+            elem_type = "recipe",
+            style = "quick_bar_slot_button",
+            elem_filters = elemFilters,
+        }
+    end
+
+    for i = 1, slotCount, 1
+    do
+        container.add {
+            name = "bbu_slot_craft_" .. i,
+            type = "sprite-button",
+            style = "quick_bar_slot_button",
+            sprite = "bbu-build-icon"
+        }
+    end
+end
+
+function bbu.gui.add_slots_vertical(container, slotCount, elemFilters)
     for i = 1, slotCount, 1
     do
         container.add {
@@ -84,8 +124,6 @@ function bbu.gui.add_slots(player)
             sprite = "bbu-build-icon"
         }
     end
-
-    bbu.util.debug("Adding slots: DONE")
 end
 
 function bbu.gui.initialize_player_gui(player)
