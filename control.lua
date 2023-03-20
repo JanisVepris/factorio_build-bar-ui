@@ -3,7 +3,7 @@ bbu = {
         dirty = true
     },
     conf = { -- mod config
-        debug = false,
+        debug = true,
         log_prefix = "BBU: ",
         log_format = {
             comment = false,
@@ -20,6 +20,7 @@ bbu = {
 require("src/util/debug")
 require("src/util/cfg")
 require("src/util/slot-container")
+require("src/util/gui-base")
 
 -- functions
 require("src/function/craft-items")

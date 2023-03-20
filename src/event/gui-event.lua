@@ -60,12 +60,7 @@ function bbu.e.gui.handler.on_slot_table_switch_clicked(event)
     local player = game.get_player(event.player_index)
     local slotContainer = bbu.util.get_slot_container(player)
 
-    if switch.switch_state == "left"
-    then
-        slotContainer.visible = true
-    else
-        slotContainer.visible = false
-    end
+    slotContainer.visible = switch.state
 end
 
 function bbu.e.gui.handler.on_gui_click(event)
