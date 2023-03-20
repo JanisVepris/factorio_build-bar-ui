@@ -20,6 +20,7 @@ bbu = {
 require("src/util/debug")
 require("src/util/cfg")
 require("src/util/slot-container")
+require("src/util/gui-base")
 
 -- functions
 require("src/function/craft-items")

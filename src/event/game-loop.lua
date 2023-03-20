@@ -23,11 +23,10 @@ function bbu.e.loop.handler.on_config_change(event)
     end
 
     local player = game.get_player(event.player_index)
-    local slotContainer = bbu.util.get_slot_container(player, true)
 
     local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
-    if not isBbuEnabled and slotContainer then slotContainer.destroy() end
+    if not isBbuEnabled then bbu.gui.destroy_gui(player) end
 
     bbu.gui.refresh_gui(player)
 

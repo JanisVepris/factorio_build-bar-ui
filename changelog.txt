@@ -9,3 +9,10 @@ Date: 2023-02-24
   Changes:
     - Selected recipes are no longer reset when changing settings for other mods
     - Selected recipes are not reset after Build Bar UI settings changes when it is not necessary
+---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 2023-03-20
+  Changes:
+    - The Build Bar is now freely dragabble on your screen (click and drag the title bar)
+    - UI is now minimized with a checkbox instead of a switch to reduce visual noise
+    - Build Bar UI now supports a horizontal layout! This is a new mod setting, can be changed on the fly.

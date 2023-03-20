@@ -1,13 +1,32 @@
 function bbu.gui.add_gui_layout(player)
     bbu.util.debug("Adding GUI layout")
 
-    local gui = player.gui.top
+    local gui = bbu.util.get_gui_base(player)
 
     local frame = gui.add {
         type = "frame",
         name = "bbu_ui_frame_outer",
+        direction = "vertical",
         style = "quick_bar_window_frame"
     }
+
+    local titlebar = frame.add{type = "flow"}
+
+    titlebar.drag_target = frame
+    titlebar.add{
+      type = "label",
+      style = "caption_label",
+      caption = "Build Bar   ",
+      ignored_by_interaction = true,
+    }
+
+    local switch = titlebar.add {
+        type = "checkbox",
+        name = "bbu_ui_slot_table_switch",
+        state = true,
+    }
+
+    switch.style.top_margin = 3
 
     local frameInner = frame.add {
         type = "frame",
@@ -21,19 +40,16 @@ function bbu.gui.add_gui_layout(player)
         direction = "vertical",
     }
 
-    flow.add {
-        type = "switch",
-        name = "bbu_ui_slot_table_switch",
-        allow_none_state = false,
-        switch_state = "left",
-        left_label_caption = "On",
-        right_label_caption = "Off",
-    }
+    local column_count = 2
+
+    if bbu.util.pcfg(player, "bbu-orientation-horizontal") == true then
+        column_count = bbu.util.pcfg(player, "bbu-slot-count")
+    end
 
     flow.add {
         type = "table",
         name = "bbu_ui_table_inner",
-        column_count = 2,
+        column_count = column_count,
         draw_vertical_lines = false,
         draw_horizontal_lines = false,
         draw_horizontal_line_after_headers = false,
@@ -58,6 +74,40 @@ function bbu.gui.add_slots(player)
 
     table.insert(elemFilters, {filter = "category", category="crafting", mode = "and"})
 
+    if bbu.util.pcfg(player, "bbu-orientation-horizontal") == false
+    then
+        bbu.gui.add_slots_vertical(container, slotCount, elemFilters)
+    else
+        bbu.gui.add_slots_horizontal(container, slotCount, elemFilters)
+    end
+
+    bbu.util.debug("Adding slots: DONE")
+end
+
+function bbu.gui.add_slots_horizontal(container, slotCount, elemFilters)
+    for i = 1, slotCount, 1
+    do
+        container.add {
+            name = "bbu_slot_" .. i,
+            type = "choose-elem-button",
+            elem_type = "recipe",
+            style = "quick_bar_slot_button",
+            elem_filters = elemFilters,
+        }
+    end
+
+    for i = 1, slotCount, 1
+    do
+        container.add {
+            name = "bbu_slot_craft_" .. i,
+            type = "sprite-button",
+            style = "quick_bar_slot_button",
+            sprite = "bbu-build-icon"
+        }
+    end
+end
+
+function bbu.gui.add_slots_vertical(container, slotCount, elemFilters)
     for i = 1, slotCount, 1
     do
         container.add {
@@ -74,8 +124,6 @@ function bbu.gui.add_slots(player)
             sprite = "bbu-build-icon"
         }
     end
-
-    bbu.util.debug("Adding slots: DONE")
 end
 
 function bbu.gui.initialize_player_gui(player)
@@ -97,7 +145,7 @@ function bbu.gui.get_selected_recipes(player, slot_container)
     for i = 1, slot_count, 1
     do
         local value = nil
-        
+
         if slot_container["bbu_slot_" .. i] ~= nil then
             value = slot_container["bbu_slot_" .. i].elem_value
         end
@@ -121,6 +169,32 @@ function bbu.gui.set_selected_recipes(player, selected_recipes, slot_container)
     end
 end
 
+function bbu.gui.destroy_gui(player)
+    bbu.util.debug("Destroying player GUI")
+
+    if player.gui.top.bbu_ui_frame_outer ~= nil then
+        player.gui.top.bbu_ui_frame_outer.destroy()
+    end
+
+    if player.gui.left.bbu_ui_frame_outer ~= nil then
+        player.gui.left.bbu_ui_frame_outer.destroy()
+    end
+
+    if player.gui.screen.bbu_ui_frame_outer ~= nil then
+        player.gui.screen.bbu_ui_frame_outer.destroy()
+    end
+
+    if player.gui.center.bbu_ui_frame_outer ~= nil then
+        player.gui.center.bbu_ui_frame_outer.destroy()
+    end
+
+    if player.gui.goal.bbu_ui_frame_outer ~= nil then
+        player.gui.goal.bbu_ui_frame_outer.destroy()
+    end
+
+    bbu.util.debug("Destroying player GUI: DONE")
+end
+
 function bbu.gui.refresh_gui(player)
     local isBbuEnabled = bbu.util.pcfg(player, "bbu-enabled")
 
@@ -134,12 +208,25 @@ function bbu.gui.refresh_gui(player)
 
     if slot_container then
         selected_recipes = bbu.gui.get_selected_recipes(player, slot_container)
-        local slot_container_outer = bbu.util.get_slot_container(player, true)
-
-        if slot_container_outer then slot_container_outer.destroy() end
     end
 
+    local container_location = {
+        x = 50,
+        y = 50,
+    }
+
+    local slot_container_outer = bbu.util.get_slot_container(player, true)
+
+    if slot_container_outer then
+        container_location = slot_container_outer.location
+    end
+
+    bbu.gui.destroy_gui(player)
+
     bbu.gui.initialize_player_gui(player)
+
+    slot_container_outer = bbu.util.get_slot_container(player, true)
+    slot_container_outer.location = container_location
 
     slot_container = bbu.util.get_slot_container(player)
 
